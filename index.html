@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Physics Quiz</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background: #fdfdfd;
+            margin: 0;
+            padding: 40px;
+            background: url('dots-bg.png');
+        }
+
+        .quiz-container {
+            background: #ff5e5e;
+            padding: 30px;
+            border-radius: 10px;
+            width: 80%;
+            margin: auto;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .question-box {
+            background: #fff9ae;
+            border-radius: 5px;
+            padding: 20px;
+            margin: 10px;
+            display: inline-block;
+            vertical-align: top;
+            width: 28%;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .question-box h4 {
+            font-size: 16px;
+            margin-bottom: 12px;
+        }
+
+        .question-box label {
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        .submit-btn {
+            background: #fff;
+            color: black;
+            padding: 10px 25px;
+            border: none;
+            border-radius: 5px;
+            margin-top: 20px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        #result {
+            background: #fff;
+            padding: 15px;
+            margin-top: 30px;
+            border-radius: 8px;
+            text-align: center;
+            font-size: 20px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="quiz-container">
+        <form id="quiz-form">
+            <div class="question-box">
+                <h4>Q1. Which of the following pairs have the same dimensions?</h4>
+                <label><input type="radio" name="q1" value="A"> A. Impulse and Momentum</label>
+                <label><input type="radio" name="q1" value="B"> B. Force and Pressure</label>
+                <label><input type="radio" name="q1" value="C"> C. Energy and Torque</label>
+                <label><input type="radio" name="q1" value="D"> D. Work and Power</label>
+            </div>
+            <div class="question-box">
+                <h4>Q2. The dimensional formula for Planck’s constant is:</h4>
+                <label><input type="radio" name="q2" value="A"> A. [MLT⁻¹]</label>
+                <label><input type="radio" name="q2" value="B"> B. [ML²T⁻³]</label>
+                <label><input type="radio" name="q2" value="C"> C. [ML²T⁻²]</label>
+                <label><input type="radio" name="q2" value="D"> D. [ML²T⁻¹]</label>
+            </div>
+            <div class="question-box">
+                <h4>Q3. If x = at² + bt + c, the dimensions of b are:</h4>
+                <label><input type="radio" name="q3" value="A"> A. [LT]</label>
+                <label><input type="radio" name="q3" value="B"> B. [LT⁻²]</label>
+                <label><input type="radio" name="q3" value="C"> C. [LT⁻¹]</label>
+                <label><input type="radio" name="q3" value="D"> D. [L]</label>
+            </div>
+            <div class="question-box">
+                <h4>Q4. Which of the following is not a dimensionless quantity?</h4>
+                <label><input type="radio" name="q4" value="A"> A. Strain</label>
+                <label><input type="radio" name="q4" value="B"> B. Refractive Index</label>
+                <label><input type="radio" name="q4" value="C"> C. Gravitational constant</label>
+                <label><input type="radio" name="q4" value="D"> D. Relative density</label>
+            </div>
+            <div class="question-box">
+                <h4>Q5. A physical quantity with dimensions [ML⁰T⁻²] is:</h4>
+                <label><input type="radio" name="q5" value="A"> A. Force</label>
+                <label><input type="radio" name="q5" value="B"> B. Pressure</label>
+                <label><input type="radio" name="q5" value="C"> C. Tension</label>
+                <label><input type="radio" name="q5" value="D"> D. Stress</label>
+            </div>
+            <div class="question-box">
+                <h4>Q6. The SI unit of coefficient of viscosity is:</h4>
+                <label><input type="radio" name="q6" value="A"> A. kg m² s⁻¹</label>
+                <label><input type="radio" name="q6" value="B"> B. kg m⁻¹ s⁻¹</label>
+                <label><input type="radio" name="q6" value="C"> C. kg m s⁻²</label>
+                <label><input type="radio" name="q6" value="D"> D. kg s⁻²</label>
+            </div>
+            <div class="question-box">
+                <h4>Q7. Dimensional formula of angular momentum is:</h4>
+                <label><input type="radio" name="q7" value="A"> A. [ML²T⁻²]</label>
+                <label><input type="radio" name="q7" value="B"> B. [MLT⁻¹]</label>
+                <label><input type="radio" name="q7" value="C"> C. [MLT⁻²]</label>
+                <label><input type="radio" name="q7" value="D"> D. [ML²T⁻¹]</label>
+            </div>
+            <div class="question-box">
+                <h4>Q8. Which quantity has same dimensions as energy?</h4>
+                <label><input type="radio" name="q8" value="A"> A. Impulse</label>
+                <label><input type="radio" name="q8" value="B"> B. Torque</label>
+                <label><input type="radio" name="q8" value="C"> C. Power</label>
+                <label><input type="radio" name="q8" value="D"> D. Momentum</label>
+            </div>
+            <div class="question-box">
+                <h4>Q9. Significant figures in 0.00750 are:</h4>
+                <label><input type="radio" name="q9" value="A"> A. 2</label>
+                <label><input type="radio" name="q9" value="B"> B. 4</label>
+                <label><input type="radio" name="q9" value="C"> C. 5</label>
+                <label><input type="radio" name="q9" value="D"> D. 3</label>
+            </div>
+            <div class="question-box">
+                <h4>Q10. Which of these is dimensionless?</h4>
+                <label><input type="radio" name="q10" value="A"> A. Poisson’s ratio</label>
+                <label><input type="radio" name="q10" value="B"> B. Surface tension</label>
+                <label><input type="radio" name="q10" value="C"> C. Electric potential</label>
+                <label><input type="radio" name="q10" value="D"> D. Magnetic flux</label>
+            </div>
+            <div style="text-align:center">
+                <button type="submit" class="submit-btn">Submit</button>
+            </div>
+        </form>
+
+        <div id="result"></div>
+    </div>
+    <script src="js/quiz.js"></script>
+</body>
+
+</html>

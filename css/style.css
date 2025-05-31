@@ -1,0 +1,35 @@
+/* css/style.css */
+body {
+  margin: 0;
+  font-family: 'Segoe UI', sans-serif;
+  background-color: #fefcd7;
+}
+.quiz-container, .letter-container, .game-container, .encouragement-container {
+  max-width: 700px;
+  margin: 50px auto;
+  padding: 30px;
+  background: #fff4b0;
+  border-radius: 12px;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+h1, h2 {
+  color: #333;
+  text-align: center;
+}
+button {
+  display: block;
+  margin: 30px auto 0;
+  padding: 10px 20px;
+  background-color: #ffa08c;
+  color: #000;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+canvas {
+  display: block;
+  margin: 0 auto;
+  border: 2px solid #ccc;
+  background-color: #fff0f0;
+}
+
