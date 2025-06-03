@@ -1,13 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Doll Catch Game</title>
-  <style>
-    /* Keep your original styles — not repeated here for brevity */
-    /* Add your styles for .flash and other UI here */
-  </style>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Doll Catch Game</title>
+<style>
+  /* [Same styling as before — unchanged for brevity] */
+  /* Use previous styling here. Not repeating to keep focus on logic updates. */
+</style>
 </head>
 <body>
   <div id="scoreBoard">Score: 0</div>
@@ -20,168 +20,168 @@
   </div>
 
 <script>
-(function(){
-  const gameArea = document.getElementById('gameArea');
-  const box = document.getElementById('box');
-  const scoreBoard = document.getElementById('scoreBoard');
-  const congratsMessage = document.getElementById('congratsMessage');
-  const playAgainBtn = document.getElementById('playAgainBtn');
+  (function(){
+    const gameArea = document.getElementById('gameArea');
+    const box = document.getElementById('box');
+    const scoreBoard = document.getElementById('scoreBoard');
+    const congratsMessage = document.getElementById('congratsMessage');
+    const playAgainBtn = document.getElementById('playAgainBtn');
 
-  const boxWidth = 120;
-  const boxHeight = 60;
-  let gameWidth = window.innerWidth;
-  let gameHeight = window.innerHeight;
+    const boxWidth = 120;
+    const boxHeight = 60;
 
-  let boxX = (gameWidth / 2) - (boxWidth / 2);
-  let boxY = gameHeight - boxHeight - 20;
+    let gameWidth = window.innerWidth;
+    let gameHeight = window.innerHeight;
 
-  const speed = 7;
-  const dollCount = 6;
-  const dollWidth = 50;
-  const dollHeight = 50;
-  const dollSpeedMin = 0.7;
-  const dollSpeedMax = 1.5;
-  const dollImages = ['doll1.png','doll2.png','doll3.png','doll4.png','doll5.png'];
+    let boxX = (gameWidth / 2) - (boxWidth / 2);
+    let boxY = gameHeight - boxHeight - 20;
 
-  let score = 0;
-  let missed = 0;
-  const maxMisses = 10;
-  let gameOver = false;
-  let dolls = [];
+    let speed = 7;
 
-  function randomSpeed() {
-    return dollSpeedMin + Math.random() * (dollSpeedMax - dollSpeedMin);
-  }
+    const dollCount = 6;
+    const dollWidth = 50;
+    const dollHeight = 50;
+    const dollSpeedMin = 0.7;
+    const dollSpeedMax = 1.5;
+    const dollImages = ['doll1.png','doll2.png','doll3.png','doll4.png','doll5.png'];
 
-  function resetDoll(doll) {
-    const img = dollImages[Math.floor(Math.random() * dollImages.length)];
-    doll.style.backgroundImage = `url(${img})`;
-    const maxX = gameWidth - dollWidth;
-    const x = Math.floor(Math.random() * maxX);
-    doll.style.left = x + 'px';
-    doll.style.top = (-dollHeight - Math.random() * 300) + 'px';
-  }
+    let score = 0;
+    let missed = 0;
+    const maxMisses = 10;
+    let gameOver = false;
+    let dolls = [];
 
-  function createDolls() {
-    dolls = [];
-    for (let i = 0; i < dollCount; i++) {
-      const doll = document.createElement('div');
-      doll.classList.add('doll');
-      resetDoll(doll);
-      gameArea.appendChild(doll);
-      dolls.push({
-        el: doll,
-        speed: randomSpeed(),
-      });
+    function randomSpeed() {
+      return dollSpeedMin + Math.random() * (dollSpeedMax - dollSpeedMin);
     }
-  }
 
-  let keys = { left: false, right: false };
-
-  window.addEventListener('keydown', (e) => {
-    if (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') keys.left = true;
-    if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') keys.right = true;
-  });
-
-  window.addEventListener('keyup', (e) => {
-    if (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') keys.left = false;
-    if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') keys.right = false;
-  });
-
-  function updateBoxPosition() {
-    if (keys.left) {
-      boxX -= speed;
-      if (boxX < 0) boxX = 0;
+    function resetDoll(doll) {
+      const img = dollImages[Math.floor(Math.random() * dollImages.length)];
+      doll.style.backgroundImage = `url(${img})`;
+      const maxX = gameWidth - dollWidth;
+      const x = Math.floor(Math.random() * maxX);
+      doll.style.left = x + 'px';
+      doll.style.top = (-dollHeight - Math.random() * 300) + 'px';
     }
-    if (keys.right) {
-      boxX += speed;
-      if (boxX > gameWidth - boxWidth) boxX = gameWidth - boxWidth;
-    }
-    box.style.left = boxX + 'px';
-  }
 
-  function isColliding(dollX, dollY) {
-    return !(dollX + dollWidth < boxX ||
-             dollX > boxX + boxWidth ||
-             dollY + dollHeight < boxY ||
-             dollY > boxY + boxHeight);
-  }
-
-  function flashScore() {
-    scoreBoard.classList.add('flash');
-    setTimeout(() => scoreBoard.classList.remove('flash'), 300);
-  }
-
-  function update() {
-    if (gameOver) return;
-
-    updateBoxPosition();
-
-    dolls.forEach(dollObj => {
-      const dollEl = dollObj.el;
-      let y = parseFloat(dollEl.style.top);
-      let x = parseFloat(dollEl.style.left);
-      y += dollObj.speed;
-
-      // Caught
-      if (isColliding(x, y)) {
-        score++;
-        scoreBoard.textContent = `Score: ${score}`;
-        resetDoll(dollEl);
-        dollObj.speed = randomSpeed();
-
-        if (score >= 10) {
-          gameOver = true;
-          congratsMessage.style.display = 'block';
-        }
-        return;
+    function createDolls() {
+      dolls = [];
+      for(let i = 0; i < dollCount; i++) {
+        const doll = document.createElement('div');
+        doll.classList.add('doll');
+        resetDoll(doll);
+        gameArea.appendChild(doll);
+        dolls.push({
+          el: doll,
+          speed: randomSpeed(),
+        });
       }
+    }
 
-      // Missed
-      if (y > gameHeight) {
-        missed++;
-        if (missed >= maxMisses) {
-          flashScore();
-          resetGame();
-          return;
-        }
-        resetDoll(dollEl);
-        dollObj.speed = randomSpeed();
-        return;
-      }
+    let keys = { left: false, right: false };
 
-      dollEl.style.top = y + 'px';
+    window.addEventListener('keydown', (e) => {
+      if(e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') keys.left = true;
+      if(e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') keys.right = true;
     });
 
-    requestAnimationFrame(update);
-  }
+    window.addEventListener('keyup', (e) => {
+      if(e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') keys.left = false;
+      if(e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') keys.right = false;
+    });
 
-  function resetGame() {
-    score = 0;
-    missed = 0;
-    scoreBoard.textContent = 'Score: 0';
-    gameOver = false;
-    congratsMessage.style.display = 'none';
+    function updateBoxPosition() {
+      if(keys.left) {
+        boxX -= speed;
+        if(boxX < 0) boxX = 0;
+      }
+      if(keys.right) {
+        boxX += speed;
+        if(boxX > gameWidth - boxWidth) boxX = gameWidth - boxWidth;
+      }
+      box.style.left = boxX + 'px';
+    }
 
-    dolls.forEach(d => d.el.remove());
+    function isColliding(dollX, dollY) {
+      return !(dollX + dollWidth < boxX ||
+               dollX > boxX + boxWidth ||
+               dollY + dollHeight < boxY ||
+               dollY > boxY + boxHeight);
+    }
+
+    function flashScore() {
+      scoreBoard.classList.add('flash');
+      setTimeout(() => scoreBoard.classList.remove('flash'), 300);
+    }
+
+    function update() {
+      if (gameOver) return;
+
+      updateBoxPosition();
+
+      dolls.forEach(dollObj => {
+        let dollEl = dollObj.el;
+        let y = parseFloat(dollEl.style.top);
+        let x = parseFloat(dollEl.style.left);
+        y += dollObj.speed;
+
+        if(isColliding(x, y)) {
+          score++;
+          scoreBoard.textContent = `Score: ${score}`;
+          resetDoll(dollEl);
+          dollObj.speed = randomSpeed();
+
+          if(score >= 10) {
+            gameOver = true;
+            congratsMessage.style.display = 'block';
+          }
+          return;
+        }
+
+        if(y > gameHeight) {
+          missed++;
+          if (missed >= maxMisses) {
+            flashScore();
+            resetGame();
+            return;
+          }
+          resetDoll(dollEl);
+          dollObj.speed = randomSpeed();
+          return;
+        }
+
+        dollEl.style.top = y + 'px';
+      });
+
+      requestAnimationFrame(update);
+    }
+
+    function resetGame() {
+      score = 0;
+      missed = 0;
+      scoreBoard.textContent = 'Score: 0';
+      gameOver = false;
+      congratsMessage.style.display = 'none';
+
+      dolls.forEach(d => d.el.remove());
+      createDolls();
+      update();
+    }
+
+    playAgainBtn.addEventListener('click', resetGame);
+
+    window.addEventListener('resize', () => {
+      gameWidth = window.innerWidth;
+      gameHeight = window.innerHeight;
+      if(boxX > gameWidth - boxWidth) {
+        boxX = gameWidth - boxWidth;
+      }
+      box.style.left = boxX + 'px';
+    });
+
     createDolls();
     update();
-  }
-
-  playAgainBtn.addEventListener('click', resetGame);
-
-  window.addEventListener('resize', () => {
-    gameWidth = window.innerWidth;
-    gameHeight = window.innerHeight;
-    if (boxX > gameWidth - boxWidth) {
-      boxX = gameWidth - boxWidth;
-    }
-    box.style.left = boxX + 'px';
-  });
-
-  createDolls();
-  update();
-})();
+  })();
 </script>
 </body>
 </html>
