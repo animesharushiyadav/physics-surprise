@@ -74,7 +74,7 @@
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    font-size: 48px;
+    font-size: 36px;
     font-weight: bold;
     color: #4caf50;
     text-shadow: 2px 2px 8px #000000aa;
@@ -84,6 +84,22 @@
     display: none;
     z-index: 20;
     user-select: none;
+    text-align: center;
+  }
+  #playAgainBtn {
+    margin-top: 20px;
+    padding: 10px 20px;
+    font-size: 18px;
+    font-weight: bold;
+    background-color: #4caf50;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s;
+  }
+  #playAgainBtn:hover {
+    background-color: #388e3c;
   }
 </style>
 </head>
@@ -92,7 +108,10 @@
   <div id="gameArea">
     <div id="box"></div>
   </div>
-  <div id="congratsMessage">🎉 Congratulations! BAILIiiiii... 🎉</div>
+  <div id="congratsMessage">
+    🎉 Congratulations! BAILIiiiii... 🎉<br><br>
+    <button id="playAgainBtn">Play Again</button>
+  </div>
 
 <script>
   (function(){
@@ -100,6 +119,7 @@
     const box = document.getElementById('box');
     const scoreBoard = document.getElementById('scoreBoard');
     const congratsMessage = document.getElementById('congratsMessage');
+    const playAgainBtn = document.getElementById('playAgainBtn');
 
     const boxWidth = 120;
     const boxHeight = 60;
@@ -110,58 +130,47 @@
     let boxX = (gameWidth / 2) - (boxWidth / 2);
     let boxY = gameHeight - boxHeight - 20;
 
-    let speed = 7; // box movement speed in px per frame
+    let speed = 7;
 
-    // Dolls config
     const dollCount = 6;
     const dollWidth = 50;
     const dollHeight = 50;
-    // Slower falling speed range
     const dollSpeedMin = 0.7;
     const dollSpeedMax = 1.5;
-
     const dollImages = ['doll1.png','doll2.png','doll3.png','doll4.png','doll5.png'];
 
     let score = 0;
     let gameOver = false;
-
-    // Create dolls
     let dolls = [];
-
-    for(let i=0; i < dollCount; i++) {
-      const doll = document.createElement('div');
-      doll.classList.add('doll');
-      resetDoll(doll);
-      gameArea.appendChild(doll);
-      dolls.push({
-        el: doll,
-        speed: randomSpeed(),
-      });
-    }
 
     function randomSpeed() {
       return dollSpeedMin + Math.random() * (dollSpeedMax - dollSpeedMin);
     }
 
     function resetDoll(doll) {
-      // random doll image
-      const img = dollImages[Math.floor(Math.random()*dollImages.length)];
+      const img = dollImages[Math.floor(Math.random() * dollImages.length)];
       doll.style.backgroundImage = `url(${img})`;
-
-      // random horizontal position within game area
       const maxX = gameWidth - dollWidth;
       const x = Math.floor(Math.random() * maxX);
       doll.style.left = x + 'px';
-
-      // start above the top
       doll.style.top = (-dollHeight - Math.random() * 300) + 'px';
     }
 
-    // Key states
-    let keys = {
-      left: false,
-      right: false
-    };
+    function createDolls() {
+      dolls = [];
+      for(let i = 0; i < dollCount; i++) {
+        const doll = document.createElement('div');
+        doll.classList.add('doll');
+        resetDoll(doll);
+        gameArea.appendChild(doll);
+        dolls.push({
+          el: doll,
+          speed: randomSpeed(),
+        });
+      }
+    }
+
+    let keys = { left: false, right: false };
 
     window.addEventListener('keydown', (e) => {
       if(e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') keys.left = true;
@@ -173,7 +182,6 @@
       if(e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') keys.right = false;
     });
 
-    // Update box position
     function updateBoxPosition() {
       if(keys.left) {
         boxX -= speed;
@@ -186,7 +194,6 @@
       box.style.left = boxX + 'px';
     }
 
-    // Check collision between doll and box
     function isColliding(dollX, dollY) {
       return !(dollX + dollWidth < boxX ||
                dollX > boxX + boxWidth ||
@@ -194,7 +201,6 @@
                dollY > boxY + boxHeight);
     }
 
-    // Flash score red when reset
     function flashScore() {
       scoreBoard.classList.add('flash');
       setTimeout(() => scoreBoard.classList.remove('flash'), 300);
@@ -209,29 +215,21 @@
         let dollEl = dollObj.el;
         let y = parseFloat(dollEl.style.top);
         let x = parseFloat(dollEl.style.left);
-
         y += dollObj.speed;
 
-        // Check collision with box
         if(isColliding(x, y)) {
           score++;
           scoreBoard.textContent = `Score: ${score}`;
           resetDoll(dollEl);
           dollObj.speed = randomSpeed();
 
-          if(score >= 10) {
+          if(score >= 50) {
             gameOver = true;
             congratsMessage.style.display = 'block';
-
-            // After 10 seconds redirect
-            setTimeout(() => {
-              window.location.href = 'encouragement.html';
-            }, 10000);
           }
           return;
         }
 
-        // If doll falls below the game area, reset score and doll
         if(y > gameHeight) {
           resetDoll(dollEl);
           dollObj.speed = randomSpeed();
@@ -249,7 +247,19 @@
       requestAnimationFrame(update);
     }
 
-    // On window resize adjust gameWidth and gameHeight
+    function resetGame() {
+      score = 0;
+      scoreBoard.textContent = 'Score: 0';
+      gameOver = false;
+      congratsMessage.style.display = 'none';
+
+      dolls.forEach(d => d.el.remove());
+      createDolls();
+      update();
+    }
+
+    playAgainBtn.addEventListener('click', resetGame);
+
     window.addEventListener('resize', () => {
       gameWidth = window.innerWidth;
       gameHeight = window.innerHeight;
@@ -259,6 +269,7 @@
       box.style.left = boxX + 'px';
     });
 
+    createDolls();
     update();
   })();
 </script>
