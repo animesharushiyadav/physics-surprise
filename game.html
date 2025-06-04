@@ -2,31 +2,88 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Quest for Arushi</title>
+  <title>Quest for Arushi 💖</title>
   <style>
-    body { font-family: sans-serif; background: #ffeef2; text-align: center; }
-    #game { display: grid; grid-template-columns: repeat(6, 50px); width: 300px; margin: auto; }
-    .tile { width: 50px; height: 50px; border: 1px solid #ccc; }
-    .wall { background: #444; }
-    .path { background: #fff; }
-    .player { background: url('player.png') center/contain no-repeat; }
-    .heart { background: url('heart.png') center/contain no-repeat; }
-    .arushi { background: url('arushi.png') center/contain no-repeat; }
+    body {
+      background: linear-gradient(to right, #ffe0e9, #ffd6ec);
+      font-family: 'Segoe UI', sans-serif;
+      text-align: center;
+      padding: 20px;
+    }
+
+    h1 {
+      color: #d63384;
+      font-size: 2.5em;
+    }
+
+    #game {
+      display: grid;
+      grid-template-columns: repeat(10, 50px);
+      gap: 3px;
+      justify-content: center;
+      margin-top: 20px;
+    }
+
+    .tile {
+      width: 50px;
+      height: 50px;
+      border-radius: 8px;
+      box-shadow: 0 0 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .wall {
+      background-color: #555;
+    }
+
+    .path {
+      background-color: #fff0f6;
+    }
+
+    .player {
+      background-image: url('https://cdn-icons-png.flaticon.com/512/3468/3468370.png');
+      background-size: cover;
+      background-position: center;
+    }
+
+    .heart {
+      background-image: url('https://cdn-icons-png.flaticon.com/512/833/833472.png');
+      background-size: 70%;
+      background-repeat: no-repeat;
+      background-position: center;
+      background-color: #fff0f6;
+    }
+
+    .arushi {
+      background-image: url('https://cdn-icons-png.flaticon.com/512/2107/2107957.png');
+      background-size: 75%;
+      background-repeat: no-repeat;
+      background-position: center;
+      background-color: #fff0f6;
+    }
+
+    p {
+      margin-top: 10px;
+      color: #6c757d;
+    }
   </style>
 </head>
 <body>
-  <h1>Quest for Arushi ❤️</h1>
+  <h1>Quest for Arushi 💖</h1>
   <div id="game"></div>
-  <p>Use Arrow Keys to move</p>
+  <p>Use Arrow Keys (↑ ↓ ← →) to move</p>
 
   <script>
     const map = [
-      ['W','W','W','W','W','W'],
-      ['W','P','.','.','H','W'],
-      ['W','W','.','W','.','W'],
-      ['W','.','.','.','.','W'],
-      ['W','H','.','W','A','W'],
-      ['W','W','W','W','W','W']
+      ['W','W','W','W','W','W','W','W','W','W'],
+      ['W','P','.','.','.','.','.','.','H','W'],
+      ['W','.','W','W','.','W','W','.','.','W'],
+      ['W','.','.','.','.','.','W','.','W','W'],
+      ['W','H','W','W','W','.','W','.','.','W'],
+      ['W','.','.','H','.','.','.','W','A','W'],
+      ['W','.','W','.','W','W','.','.','W','W'],
+      ['W','.','.','.','W','H','.','W','.','W'],
+      ['W','W','W','.','.','.','.','.','.','W'],
+      ['W','W','W','W','W','W','W','W','W','W']
     ];
 
     const game = document.getElementById("game");
@@ -51,24 +108,44 @@
     function movePlayer(dx, dy) {
       const newX = playerPos.x + dx;
       const newY = playerPos.y + dy;
-      if (map[newY][newX] !== 'W') {
+
+      // Check boundaries
+      if (
+        newY >= 0 && newY < map.length &&
+        newX >= 0 && newX < map[0].length &&
+        map[newY][newX] !== 'W'
+      ) {
         playerPos = {x: newX, y: newY};
         if (map[newY][newX] === 'H') {
-          map[newY][newX] = '.';
           alert('You picked a heart 💖');
+          map[newY][newX] = '.';
         }
         if (map[newY][newX] === 'A') {
-          alert("You reached Arushi! 💑 The quest is complete.");
+          alert("You reached Arushi! 💑 She says: 'I've been waiting for you ❤️'");
         }
         drawMap();
       }
     }
 
     document.addEventListener('keydown', e => {
-      if (e.key === 'ArrowUp') movePlayer(0, -1);
-      if (e.key === 'ArrowDown') movePlayer(0, 1);
-      if (e.key === 'ArrowLeft') movePlayer(-1, 0);
-      if (e.key === 'ArrowRight') movePlayer(1, 0);
+      switch (e.key) {
+        case 'ArrowUp':
+        case 'Up':
+          movePlayer(0, -1);
+          break;
+        case 'ArrowDown':
+        case 'Down':
+          movePlayer(0, 1);
+          break;
+        case 'ArrowLeft':
+        case 'Left':
+          movePlayer(-1, 0);
+          break;
+        case 'ArrowRight':
+        case 'Right':
+          movePlayer(1, 0);
+          break;
+      }
     });
 
     drawMap();
