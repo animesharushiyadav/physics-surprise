@@ -1,272 +1,77 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Doll Catch Game</title>
+  <meta charset="UTF-8">
+  <title>Quest for Arushi</title>
   <style>
-    * {
-      box-sizing: border-box;
-    }
-    body, html {
-      margin: 0; padding: 0; height: 100vh; overflow: hidden;
-      font-family: Arial, sans-serif;
-      user-select: none;
-    }
-    #gameArea {
-      position: relative;
-      width: 100vw;
-      height: 100vh;
-      overflow: hidden;
-      background: linear-gradient(to bottom, #87ceeb 0%, #b0e0e6 70%, #ffffff 100%);
-    }
-    #gameArea::before {
-      content: '';
-      position: absolute;
-      top: 10%;
-      left: 0;
-      width: 100%;
-      height: 20%;
-      background: radial-gradient(circle at 20% 50%, #fff 20%, transparent 70%),
-                  radial-gradient(circle at 50% 40%, #fff 15%, transparent 60%),
-                  radial-gradient(circle at 80% 60%, #fff 25%, transparent 75%);
-      opacity: 0.25;
-      pointer-events: none;
-      z-index: 0;
-    }
-    #scoreBoard {
-      position: fixed;
-      top: 10px;
-      left: 10px;
-      font-size: 28px;
-      font-weight: bold;
-      color: #004d40;
-      text-shadow: 1px 1px 3px #00000088;
-      z-index: 10;
-    }
-    #scoreBoard.flash {
-      color: #d32f2f;
-      text-shadow: 0 0 10px #d32f2f;
-    }
-    #box {
-      position: absolute;
-      bottom: 20px;
-      left: calc(50% - 60px);
-      width: 120px;
-      height: 60px;
-      background: url('box.png') no-repeat center/contain;
-      transition: left 0.05s linear;
-      z-index: 5;
-    }
-    .doll {
-      position: absolute;
-      width: 50px;
-      height: 50px;
-      background-size: contain;
-      background-repeat: no-repeat;
-      pointer-events: none;
-      z-index: 4;
-    }
-    #congratsMessage {
-      position: fixed;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      font-size: 36px;
-      font-weight: bold;
-      color: #4caf50;
-      text-shadow: 2px 2px 8px #000000aa;
-      background: rgba(255, 255, 255, 0.95);
-      padding: 30px 40px;
-      border-radius: 15px;
-      display: none;
-      z-index: 20;
-      text-align: center;
-    }
-    #playAgainBtn {
-      margin-top: 20px;
-      padding: 10px 20px;
-      font-size: 18px;
-      background-color: #1976d2;
-      color: white;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-    }
-    #playAgainBtn:hover {
-      background-color: #0d47a1;
-    }
+    body { font-family: sans-serif; background: #ffeef2; text-align: center; }
+    #game { display: grid; grid-template-columns: repeat(6, 50px); width: 300px; margin: auto; }
+    .tile { width: 50px; height: 50px; border: 1px solid #ccc; }
+    .wall { background: #444; }
+    .path { background: #fff; }
+    .player { background: url('player.png') center/contain no-repeat; }
+    .heart { background: url('heart.png') center/contain no-repeat; }
+    .arushi { background: url('arushi.png') center/contain no-repeat; }
   </style>
 </head>
 <body>
-  <div id="scoreBoard">Score: 0</div>
-  <div id="gameArea">
-    <div id="box"></div>
-  </div>
-  <div id="congratsMessage">
-    🎉 Congratulations! gawaaaaaaaaR 🎉<br><br>
-    <button id="playAgainBtn">Play Again</button>
-  </div>
+  <h1>Quest for Arushi ❤️</h1>
+  <div id="game"></div>
+  <p>Use Arrow Keys to move</p>
 
   <script>
-    (function(){
-      const gameArea = document.getElementById('gameArea');
-      const box = document.getElementById('box');
-      const scoreBoard = document.getElementById('scoreBoard');
-      const congratsMessage = document.getElementById('congratsMessage');
-      const playAgainBtn = document.getElementById('playAgainBtn');
+    const map = [
+      ['W','W','W','W','W','W'],
+      ['W','P','.','.','H','W'],
+      ['W','W','.','W','.','W'],
+      ['W','.','.','.','.','W'],
+      ['W','H','.','W','A','W'],
+      ['W','W','W','W','W','W']
+    ];
 
-      const boxWidth = 120;
-      const boxHeight = 60;
-      let gameWidth = window.innerWidth;
-      let gameHeight = window.innerHeight;
+    const game = document.getElementById("game");
+    let playerPos = {x: 1, y: 1};
 
-      let boxX = (gameWidth / 2) - (boxWidth / 2);
-      let boxY = gameHeight - boxHeight - 20;
-      const speed = 7;
-
-      const dollCount = 6;
-      const dollWidth = 50;
-      const dollHeight = 50;
-      const dollSpeedMin = 4;
-      const dollSpeedMax = 7;
-      const dollImages = ['doll1.png','doll2.png','doll3.png','doll4.png','doll5.png'];
-
-      let score = 0;
-      let missed = 0;
-      const maxMisses = 10;
-      let gameOver = false;
-      let dolls = [];
-
-      function randomSpeed() {
-        return dollSpeedMin + Math.random() * (dollSpeedMax - dollSpeedMin);
-      }
-
-      function resetDoll(doll) {
-        const img = dollImages[Math.floor(Math.random() * dollImages.length)];
-        doll.style.backgroundImage = `url(${img})`;
-        const maxX = gameWidth - dollWidth;
-        const x = Math.floor(Math.random() * maxX);
-        doll.style.left = x + 'px';
-        doll.style.top = (-dollHeight - Math.random() * 300) + 'px';
-      }
-
-      function createDolls() {
-        dolls = [];
-        for (let i = 0; i < dollCount; i++) {
-          const doll = document.createElement('div');
-          doll.classList.add('doll');
-          resetDoll(doll);
-          gameArea.appendChild(doll);
-          dolls.push({
-            el: doll,
-            speed: randomSpeed(),
-          });
-        }
-      }
-
-      let keys = { left: false, right: false };
-      window.addEventListener('keydown', (e) => {
-        if (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') keys.left = true;
-        if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') keys.right = true;
-      });
-      window.addEventListener('keyup', (e) => {
-        if (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') keys.left = false;
-        if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') keys.right = false;
-      });
-
-      function updateBoxPosition() {
-        if (keys.left) {
-          boxX -= speed;
-          if (boxX < 0) boxX = 0;
-        }
-        if (keys.right) {
-          boxX += speed;
-          if (boxX > gameWidth - boxWidth) boxX = gameWidth - boxWidth;
-        }
-        box.style.left = boxX + 'px';
-      }
-
-      function isColliding(dollX, dollY) {
-        return !(dollX + dollWidth < boxX ||
-                 dollX > boxX + boxWidth ||
-                 dollY + dollHeight < boxY ||
-                 dollY > boxY + boxHeight);
-      }
-
-      function flashScore() {
-        scoreBoard.classList.add('flash');
-        setTimeout(() => scoreBoard.classList.remove('flash'), 300);
-      }
-
-      function update() {
-        if (gameOver) return;
-
-        updateBoxPosition();
-
-        dolls.forEach(dollObj => {
-          const dollEl = dollObj.el;
-          let y = parseFloat(dollEl.style.top);
-          let x = parseFloat(dollEl.style.left);
-          y += dollObj.speed;
-
-          if (isColliding(x, y)) {
-            score++;
-            scoreBoard.textContent = `Score: ${score}`;
-            resetDoll(dollEl);
-            dollObj.speed = randomSpeed();
-
-            if (score >= 50) {
-              gameOver = true;
-              congratsMessage.style.display = 'block';
-            }
-            return;
-          }
-
-          if (y > gameHeight) {
-            missed++;
-            resetDoll(dollEl);
-            dollObj.speed = randomSpeed();
-
-            if (missed >= maxMisses) {
-              flashScore();
-              resetGame();
-            }
-            return;
-          }
-
-          dollEl.style.top = y + 'px';
+    function drawMap() {
+      game.innerHTML = '';
+      map.forEach((row, y) => {
+        row.forEach((tile, x) => {
+          const div = document.createElement('div');
+          div.classList.add('tile');
+          if (tile === 'W') div.classList.add('wall');
+          else if (tile === '.') div.classList.add('path');
+          else if (tile === 'H') div.classList.add('heart');
+          else if (tile === 'A') div.classList.add('arushi');
+          if (playerPos.x === x && playerPos.y === y) div.classList.add('player');
+          game.appendChild(div);
         });
-
-        requestAnimationFrame(update);
-      }
-
-      function resetGame() {
-        score = 0;
-        missed = 0;
-        scoreBoard.textContent = 'Score: 0';
-        gameOver = false;
-        congratsMessage.style.display = 'none';
-
-        dolls.forEach(d => d.el.remove());
-        createDolls();
-        update();
-      }
-
-      playAgainBtn.addEventListener('click', resetGame);
-
-      window.addEventListener('resize', () => {
-        gameWidth = window.innerWidth;
-        gameHeight = window.innerHeight;
-        if (boxX > gameWidth - boxWidth) {
-          boxX = gameWidth - boxWidth;
-        }
-        box.style.left = boxX + 'px';
       });
+    }
 
-      createDolls();
-      update();
-    })();
+    function movePlayer(dx, dy) {
+      const newX = playerPos.x + dx;
+      const newY = playerPos.y + dy;
+      if (map[newY][newX] !== 'W') {
+        playerPos = {x: newX, y: newY};
+        if (map[newY][newX] === 'H') {
+          map[newY][newX] = '.';
+          alert('You picked a heart 💖');
+        }
+        if (map[newY][newX] === 'A') {
+          alert("You reached Arushi! 💑 The quest is complete.");
+        }
+        drawMap();
+      }
+    }
+
+    document.addEventListener('keydown', e => {
+      if (e.key === 'ArrowUp') movePlayer(0, -1);
+      if (e.key === 'ArrowDown') movePlayer(0, 1);
+      if (e.key === 'ArrowLeft') movePlayer(-1, 0);
+      if (e.key === 'ArrowRight') movePlayer(1, 0);
+    });
+
+    drawMap();
   </script>
 </body>
 </html>
